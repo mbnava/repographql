@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Function VS Arrow Function</title>
+  <style>
+    body {
+      background: #f5f5f5f5;
+      font-family: system-ui;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .container {
+      color: #e90063;
+      font-size: 2.8em;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Function VS Arrow Function</h1>
+  <h1 id="container" class="container"></h1>
+  <span>
+    <button id="type">Type</button>
+    <button id="name">Name</button>
+    <button id="random">Random</button>
+  </span>
+
+  <script>
+
+     //FUNCTION MANERA TRADICIONAL DE JAVASCRIPT
+    // function getRandomId(max) {
+    //   return Math.floor(Math.random() * (max - 1)  +1)
+    // }
+    // console.log(
+    //   getRandomId(150)
+    // )
+	
+     //ARROW FUNCTION DE JAVASCRIPT
+     const getRandomId = (max) => {
+       return Math.floor(Math.random() * (max - 1) + 1)
+     }
+
+    // const getRandomId = (max) => Math.floor(Math.random() * (max - 1) + 1)
+    // const getRandomId = max => Math.floor(Math.random() * (max - 1) + 1)
+   // const getRandomId = _ => Math.floor(Math.random() * (150 - 1) + 1)
+
+     console.log(
+       getRandomId(150)
+     )
+
+    const example1 = {
+      max: 150,
+      getRandomId: function() {
+        return Math.floor(Math.random() * (this.max - 1)  +1)
+      }
+    }
+    // console.log(
+    //   example1.getRandomId()
+    // )
+
+    // const example2 = {
+    //   max: 150,
+    //   getRandomId: () => {
+    //     console.log(this)
+    //     return Math.floor(Math.random() * (this.max - 1) + 1)
+    //   }
+    // }
+    // console.log(
+    //   example2.getRandomId()
+    // )
+
+
+    class API {
+      BASE_URL = 'https://pokeapi.co/api/v2/'
+      async fetch(id) {
+        const searchId = id || this.id
+        const response = await fetch(`${this.BASE_URL}pokemon/${searchId}`)
+        const pokemon = await response.json()
+        this.pokemon = pokemon
+        return pokemon
+      }
+    } // Termina Class API
+
+    class Pokemon extends API {
+      constructor(id) {
+        super(id)
+        this.id = id
+        const self = this
+        this.$type.addEventListener('click', function() {
+          console.log(this)
+          self.renderType()
+        }) //Termina evento click sobre el boton type 
+		
+        this.$name.addEventListener('click', () => {
+          console.log(this)
+          this.renderName()
+        }) //Termina evento click sobre el boton nameº 
+		
+        this.$random.addEventListener('click', () => {
+          console.log(this.randomId)
+          this.fetch(this.randomId)
+          .then(() => {
+            this.renderName()
+            this.fetch(this.randomId)
+            .then(() => {
+              this.renderName()
+            })
+          })
+        }) //Termina evento click sobre el boton random 
+      } //Termina constructor
+	  
+      $container = document.querySelector('#container')
+      $type = document.querySelector('#type')
+      $name = document.querySelector('#name')
+      $random = document.querySelector('#random')
+      // getRandomId() {
+      //   return Math.floor(Math.random() * (this.max - 1) + 1)
+      // }
+      get randomId() {
+        return Math.floor(Math.random() * (150 - 1) + 1)
+      }
+      renderName() {
+        this.$container.textContent = `Pokemon encontrado ${this.pokemon.name}`
+      }
+      renderType() {
+        this.$container.textContent = `Es de tipo ${this.pokemon.types[0].type.name}`
+      }
+    } //Termina class Pokemon
+
+    const pokemon = new Pokemon(25)
+    pokemon.fetch()
+    .then(() => {
+      pokemon.renderName()
+    })
+  </script>
+</body>
+
+</html>
